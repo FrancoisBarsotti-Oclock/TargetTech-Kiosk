@@ -109,3 +109,11 @@
 [2026-05-21 22:03:21] [INFO] Auto-hide taskbar appliqué.
 [2026-05-21 22:03:21] [INFO] Ruche kiosk déchargée.
 [2026-05-21 22:03:21] [INFO] Configuration auto-hide taskbar terminée.
+[2026-05-21 22:09:15] [INFO] Début configuration auto-hide taskbar.
+[2026-05-21 22:09:15] [INFO] Auto-hide taskbar appliqué.
+[2026-05-21 22:09:16] [INFO] Ruche kiosk déchargée.
+[2026-05-21 22:09:16] [INFO] Configuration auto-hide taskbar terminée.
+[2026-05-21 22:09:24] [INFO] Début Chrome Hardening Phase 1.
+[2026-05-21 22:09:24] [INFO] Dossier policies Chrome créé.
+[2026-05-21 22:09:24] [INFO] Policies Chrome Phase 1 écrites.
+[2026-05-21 22:09:24] [INFO] Chrome Hardening Phase 1 terminé.
