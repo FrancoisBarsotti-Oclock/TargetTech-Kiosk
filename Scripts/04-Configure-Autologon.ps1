@@ -8,7 +8,7 @@
 Write-Log "Début de la configuration Autologon kiosk."
 
 $KioskUser = "kiosk"
-$KioskPasswordPlain = "TargetTech-Kiosk-2026!"
+$KioskPassword = Read-Host "Entrer le mot de passe temporaire du compte kiosk" -AsSecureString
 $WinlogonPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
 
 # Vérification du compte kiosk

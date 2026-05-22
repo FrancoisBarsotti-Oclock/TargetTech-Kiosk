@@ -13,8 +13,9 @@ $KioskUser = "kiosk"
 
 # Mot de passe temporaire fort
 # À adapter avant usage réel
-$KioskPasswordPlain = "TargetTech-Kiosk-2026!"
-$KioskPassword = ConvertTo-SecureString $KioskPasswordPlain -AsPlainText -Force
+# Saisir manuellement à l'exécution pour éviter de stocker un secret dans le dépôt GitHub
+$KioskPassword = Read-Host "Entrer le mot de passe temporaire du compte kiosk" -AsSecureString
+
 
 # Vérification si le compte existe déjà
 $ExistingUser = Get-LocalUser -Name $KioskUser -ErrorAction SilentlyContinue
