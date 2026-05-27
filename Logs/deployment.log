@@ -117,3 +117,7 @@
 [2026-05-21 22:09:24] [INFO] Dossier policies Chrome créé.
 [2026-05-21 22:09:24] [INFO] Policies Chrome Phase 1 écrites.
 [2026-05-21 22:09:24] [INFO] Chrome Hardening Phase 1 terminé.
+[2026-05-27 17:25:52] [INFO] Début de la configuration Autologon kiosk.
+[2026-05-27 17:26:28] [INFO] Autologon configuré pour l'utilisateur kiosk.
+[2026-05-27 17:26:28] [INFO] Nom machine utilisé comme domaine local : TARGET-TECH
+[2026-05-27 17:26:28] [INFO] Configuration Autologon terminée.
