@@ -1,6 +1,6 @@
 # ============================================================
 # 04-Configure-Autologon.ps1
-# Configuration de l'ouverture automatique du compte kiosk
+# Configuration de l'ouverture automatique du compte kiosk avec mdp actif
 # ============================================================
 
 . "C:\TargetTech\Scripts\Common.ps1"

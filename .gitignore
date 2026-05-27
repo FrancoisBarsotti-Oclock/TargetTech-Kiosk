@@ -2,3 +2,5 @@ Apps/SwitchLauncher.exe
 Apps/SwitchLauncher.exe
 Apps/SwitchLauncher.exe
 Apps/SwitchLauncher.exe
+Logs/
+*.log
