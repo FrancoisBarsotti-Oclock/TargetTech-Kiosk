@@ -23,8 +23,8 @@ while ($true) {
         Write-WatchdogLog "SwitchLauncher absent. Relance en cours."
 
         try {
-            Start-Process -FilePath $LauncherPath -WorkingDirectory "C:\TargetTech\Apps"
-            Write-WatchdogLog "SwitchLauncher relancé."
+            schtasks /Run /TN "TargetTech-SwitchLauncher-Elevated" | Out-Null
+            Write-WatchdogLog "Tâche SwitchLauncher-Elevated exécutée."
         }
         catch {
             Write-WatchdogLog "Erreur relance SwitchLauncher : $($_.Exception.Message)"
