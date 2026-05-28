@@ -10,11 +10,22 @@ Write-Log "Début configuration fond d'écran kiosk."
 # Chemin de l'image personnalisée
 $WallpaperPath = "C:\TargetTech\Config\Fond_écran_TT.png"
 
-# Chemin du profil utilisateur kiosk
-$KioskUserProfile = "C:\Users\kiosk"
+# Détection automatique du vrai profil du compte kiosk
+$KioskProfile = Get-CimInstance Win32_UserProfile |
+    Where-Object { $_.LocalPath -like "C:\Users\kiosk*" -and $_.Special -eq $false } |
+    Select-Object -First 1
+
+if ($null -eq $KioskProfile) {
+    Write-Log "Profil kiosk introuvable via Win32_UserProfile." "ERROR"
+    throw "Profil kiosk introuvable."
+}
+
+$KioskUserProfile = $KioskProfile.LocalPath
 
 # Chemin du fichier registre utilisateur kiosk
-$KioskHivePath = "$KioskUserProfile\NTUSER.DAT"
+$KioskHivePath = Join-Path $KioskUserProfile "NTUSER.DAT"
+
+Write-Log "Profil kiosk détecté : $KioskUserProfile"
 
 # Nom temporaire utilisé pour monter le registre utilisateur kiosk
 $TempHiveName = "KioskTempHive"
