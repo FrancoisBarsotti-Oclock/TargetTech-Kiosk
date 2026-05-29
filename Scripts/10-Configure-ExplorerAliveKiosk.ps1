@@ -1,5 +1,5 @@
 # ============================================================
-# 14-Configure-ExplorerAliveKiosk.ps1
+# 10-Configure-ExplorerAliveKiosk.ps1
 # Stratégie stable : Explorer reste actif mais l'utilisateur kiosk est verrouillé
 # ============================================================
 
