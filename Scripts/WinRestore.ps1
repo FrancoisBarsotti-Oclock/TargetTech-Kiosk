@@ -29,6 +29,8 @@ $Tasks = @(
     "TargetTech-Watchdog",
     "TargetTech-SwitchLauncher-Elevated",
     "TargetTech-LogAdminLogon"
+    "TargetTech-KioskLauncher"
+    "TargetTech-CleanLauncher"
 )
 
 foreach ($Task in $Tasks) {
