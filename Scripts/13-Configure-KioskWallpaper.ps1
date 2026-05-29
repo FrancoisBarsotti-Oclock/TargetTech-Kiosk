@@ -58,7 +58,10 @@ reg add "HKU\$TempHiveName\Control Panel\Desktop" /v TileWallpaper /t REG_SZ /d 
 Write-Log "Fond d'écran configuré pour le compte kiosk."
 
 # Décharge proprement le registre utilisateur kiosk
-reg unload "HKU\$TempHiveName" | Out-Null
+reg query HKU\KioskTempHive > $null 2>&1
+if ($LASTEXITCODE -eq 0) {
+    reg unload HKU\KioskTempHive | Out-Null
+}
 Write-Log "Hive utilisateur kiosk déchargé."
 
 Write-Log "Configuration fond d'écran kiosk terminée."
