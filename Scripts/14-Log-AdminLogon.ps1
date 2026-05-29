@@ -9,16 +9,15 @@ $LogPath = "C:\TargetTech\Logs\admin-logon.log"
 New-Item -ItemType Directory -Force -Path "C:\TargetTech\Logs" | Out-Null
 
 # Récupération de l'utilisateur connecté
-$User = "$env:USERDOMAIN\$env:USERNAME"
+$User = $env:USERNAME
+$UserFull = "$env:USERDOMAIN\$env:USERNAME"
 $Date = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
-# Vérifie si l'utilisateur courant est administrateur local
-$CurrentIdentity = [Security.Principal.WindowsIdentity]::GetCurrent()
-$Principal = New-Object Security.Principal.WindowsPrincipal($CurrentIdentity)
+# Journaliser toute connexion différente de kiosk
+if ($User -ne "kiosk") {
 
-$IsAdmin = $Principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    Add-Content `
+        -Path $LogPath `
+        -Value "[$Date] Connexion hors kiosk détectée : $UserFull"
 
-# Si l'utilisateur est admin, écrire dans le log
-if ($IsAdmin) {
-    Add-Content -Path $LogPath -Value "[$Date] Connexion administrateur détectée : $User"
 }
