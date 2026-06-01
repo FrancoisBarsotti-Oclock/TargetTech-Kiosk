@@ -109,7 +109,7 @@ try {
     Set-ItemProperty -Path $ExplorerPolicy -Name "NoTrayContextMenu" -Type DWord -Value 1
 
     # Masque les icônes du bureau
-    Set-ItemProperty -Path $ExplorerPolicy -Name "NoDesktop" -Type DWord -Value 1
+    Remove-ItemProperty -Path $ExplorerPolicy -Name "NoDesktop" -ErrorAction SilentlyContinue
 
     reg add "HKU\$HiveName\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v HideIcons /t REG_DWORD /d 1 /f | Out-Null
 
