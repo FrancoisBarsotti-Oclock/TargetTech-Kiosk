@@ -8,10 +8,21 @@
 Write-Log "Début configuration Explorer vivant mais verrouillé."
 
 $KioskUser = "kiosk"
+
+$KioskProfile = Get-CimInstance Win32_UserProfile |
+    Where-Object { $_.LocalPath -like "C:\Users\kiosk*" -and $_.Special -eq $false } |
+    Sort-Object LastUseTime -Descending |
+    Select-Object -First 1
+
+if ($null -eq $KioskProfile) {
+    Write-Log "Profil kiosk introuvable." "ERROR"
+    throw "Profil kiosk introuvable."
+}
+
+$NtUserDat = Join-Path $KioskProfile.LocalPath "NTUSER.DAT"
 $LauncherPath = "C:\TargetTech\Apps\SwitchLauncher.exe"
 $TaskName = "TargetTech-KioskLauncher"
 $HiveName = "KioskTempHive"
-$NtUserDat = "C:\Users\$KioskUser\NTUSER.DAT"
 
 # Vérification du launcher
 if (-not (Test-Path $LauncherPath)) {
@@ -100,6 +111,10 @@ try {
     # Masque les icônes du bureau
     Set-ItemProperty -Path $ExplorerPolicy -Name "NoDesktop" -Type DWord -Value 1
 
+    reg add "HKU\$HiveName\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v HideIcons /t REG_DWORD /d 1 /f | Out-Null
+
+    Write-Log "Icônes du bureau masquées pour kiosk."
+        
     # Bloque accès panneau de configuration / paramètres classiques
     Set-ItemProperty -Path $ExplorerPolicy -Name "NoControlPanel" -Type DWord -Value 1
 
