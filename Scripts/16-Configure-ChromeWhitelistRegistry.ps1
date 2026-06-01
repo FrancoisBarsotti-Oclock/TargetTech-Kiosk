@@ -31,11 +31,9 @@ Set-ItemProperty -Path $ChromePolicyRoot -Name "SearchSuggestEnabled" -Type DWor
 Set-ItemProperty -Path $ChromePolicyRoot -Name "DeveloperToolsAvailability" -Type DWord -Value 1
 
 # Startup / homepage
-Set-ItemProperty -Path $ChromePolicyRoot -Name "HomepageLocation" -Type String -Value "https://target-tech.fr/"
-Set-ItemProperty -Path $ChromePolicyRoot -Name "RestoreOnStartup" -Type DWord -Value 4
-
-New-Item -Path "$ChromePolicyRoot\RestoreOnStartupURLs" -Force | Out-Null
-New-ItemProperty -Path "$ChromePolicyRoot\RestoreOnStartupURLs" -Name "1" -Value "https://target-tech.fr/" -PropertyType String -Force | Out-Null
+Remove-ItemProperty -Path $ChromePolicyRoot -Name "HomepageLocation" -ErrorAction SilentlyContinue
+Remove-ItemProperty -Path $ChromePolicyRoot -Name "RestoreOnStartup" -ErrorAction SilentlyContinue
+Remove-Item -Path "$ChromePolicyRoot\RestoreOnStartupURLs" -Recurse -Force -ErrorAction SilentlyContinue
 
 # URL blocklist : bloque tout
 New-Item -Path "$ChromePolicyRoot\URLBlocklist" -Force | Out-Null
