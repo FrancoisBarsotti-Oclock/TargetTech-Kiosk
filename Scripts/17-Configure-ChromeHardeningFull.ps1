@@ -74,9 +74,11 @@ foreach ($Url in $AllowUrls) {
 # ------------------------------------------------------------
 
 New-Item -Path "$ChromePolicyRoot\AudioCaptureAllowedUrls" -Force | Out-Null
-New-ItemProperty -Path "$ChromePolicyRoot\AudioCaptureAllowedUrls" -Name "1" -Value "https://target-tech.fr/*" -PropertyType String -Force | Out-Null
+New-ItemProperty -Path "$ChromePolicyRoot\AudioCaptureAllowedUrls" -Name "1" -Value "target-tech.fr" -PropertyType String -Force | Out-Null
+New-ItemProperty -Path "$ChromePolicyRoot\AudioCaptureAllowedUrls" -Name "2" -Value "peersjs.target-tech.fr" -PropertyType String -Force | Out-Null
 
 New-Item -Path "$ChromePolicyRoot\VideoCaptureAllowedUrls" -Force | Out-Null
-New-ItemProperty -Path "$ChromePolicyRoot\VideoCaptureAllowedUrls" -Name "1" -Value "https://target-tech.fr/*" -PropertyType String -Force | Out-Null
+New-ItemProperty -Path "$ChromePolicyRoot\VideoCaptureAllowedUrls" -Name "1" -Value "target-tech.fr" -PropertyType String -Force | Out-Null
+New-ItemProperty -Path "$ChromePolicyRoot\VideoCaptureAllowedUrls" -Name "2" -Value "peersjs.target-tech.fr" -PropertyType String -Force | Out-Null
 
 Write-Log "Chrome Hardening complet appliqué."
