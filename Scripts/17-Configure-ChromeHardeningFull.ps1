@@ -54,6 +54,9 @@ New-Item -Path "$ChromePolicyRoot\URLAllowlist" -Force | Out-Null
 
 $AllowUrls = @(
     "target-tech.fr",
+    "peersjs.target-tech.fr",
+    "matomo.science-edu.fr",
+    "upload.wikimedia.org",
     "paypal.com",
     "chrome://policy",
     "chrome://gpu",
