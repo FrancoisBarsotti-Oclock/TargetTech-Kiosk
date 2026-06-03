@@ -115,6 +115,7 @@ if ($null -ne $KioskProfile) {
                 "NoTrayContextMenu",
                 "NoDesktop",
                 "NoControlPanel"
+                "DisallowRun"
             )
 
             foreach ($Name in $ExplorerPolicyNames) {
@@ -131,7 +132,11 @@ if ($null -ne $KioskProfile) {
             foreach ($Name in $SystemPolicyNames) {
                 Remove-ItemProperty -Path $SystemPolicy -Name $Name -ErrorAction SilentlyContinue
             }
+            # Supprimer la whitelist applicative
+            Remove-ItemProperty -Path $ExplorerPolicy -Name "DisallowRun" -ErrorAction SilentlyContinue
+            Remove-Item -Path "$ExplorerPolicy\DisallowRun" -Recurse -Force -ErrorAction SilentlyContinue
 
+            # Réafficher les icônes du bureau
             Remove-ItemProperty -Path $ExplorerAdvanced -Name "HideIcons" -ErrorAction SilentlyContinue
         }
         finally {
