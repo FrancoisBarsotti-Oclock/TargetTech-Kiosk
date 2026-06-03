@@ -161,7 +161,19 @@ Remove-ItemProperty `
   -ErrorAction SilentlyContinue
 
 # ------------------------------------------------------------
-# 9. Relancer Explorer immédiatement
+# 9. Restaurer les paramètres d'alimentation Windows
+# ------------------------------------------------------------
+
+powercfg /change standby-timeout-ac 15
+powercfg /change standby-timeout-dc 15
+
+powercfg /change monitor-timeout-ac 10
+powercfg /change monitor-timeout-dc 5
+
+powercfg /hibernate on
+
+# ------------------------------------------------------------
+# 10. Relancer Explorer immédiatement
 # ------------------------------------------------------------
 
 Start-Process explorer.exe
