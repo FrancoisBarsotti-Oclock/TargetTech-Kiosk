@@ -55,6 +55,9 @@ foreach ($Task in $Tasks) {
 
 Remove-Item -Path "$ChromePolicyRoot\URLBlocklist" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$ChromePolicyRoot\URLAllowlist" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$ChromePolicyRoot\AudioCaptureAllowedUrls" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$ChromePolicyRoot\VideoCaptureAllowedUrls" -Recurse -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$ChromePolicyRoot\RestoreOnStartupURLs" -Recurse -Force -ErrorAction SilentlyContinue
 
 $ChromePolicyNames = @(
     "BrowserSignin",
@@ -69,7 +72,12 @@ $ChromePolicyNames = @(
     "SearchSuggestEnabled",
     "DeveloperToolsAvailability",
     "HomepageLocation",
-    "RestoreOnStartup"
+    "RestoreOnStartup",
+    "DownloadRestrictions",
+    "PrintingEnabled",
+    "BrowserGuestModeEnabled",
+    "BrowserAddPersonEnabled",
+    "ProfilePickerOnStartupAvailability"
 )
 
 foreach ($PolicyName in $ChromePolicyNames) {
@@ -139,7 +147,16 @@ if ($null -ne $KioskProfile) {
 Get-Process SwitchLauncher -ErrorAction SilentlyContinue | Stop-Process -Force
 
 # ------------------------------------------------------------
-# 8. Relancer Explorer immédiatement
+# 8. Restaurer les touches Windows
+# ------------------------------------------------------------
+
+Remove-ItemProperty `
+  -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout" `
+  -Name "Scancode Map" `
+  -ErrorAction SilentlyContinue
+
+# ------------------------------------------------------------
+# 9. Relancer Explorer immédiatement
 # ------------------------------------------------------------
 
 Start-Process explorer.exe
