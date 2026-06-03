@@ -49,7 +49,6 @@ try {
         "msconfig.exe",
         "control.exe",
         "taskmgr.exe",
-        "explorer.exe",
         "compmgmt.msc",
         "services.msc",
         "gpedit.msc",
