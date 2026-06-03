@@ -79,4 +79,7 @@ else {
 
 Write-Log "Désactivation Windows Welcome Experience terminée."
 Write-Host "Windows Welcome Experience désactivée pour l'utilisateur courant et le profil kiosk."
-Pause
+
+if ($Host.Name -eq "ConsoleHost") {
+    Pause
+}
