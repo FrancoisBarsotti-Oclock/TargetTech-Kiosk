@@ -141,13 +141,7 @@ if ($null -ne $KioskProfile) {
             
             # Réafficher les icônes du bureau
             Remove-ItemProperty -Path $ExplorerAdvanced -Name "HideIcons" -ErrorAction SilentlyContinue
-
-            # Réafficher le bouton Copilot si Windows le gère
-            reg delete "HKU\$HiveName\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowCopilotButton /f 2>$null | Out-Null
-
-            # Supprimer la désactivation Copilot côté profil kiosk
-            reg delete "HKU\$HiveName\Software\Policies\Microsoft\Windows\WindowsCopilot" /v TurnOffWindowsCopilot /f 2>$null | Out-Null
-
+            
         }
         finally {
             reg unload "HKU\$HiveName" 2>$null | Out-Null
@@ -183,24 +177,14 @@ powercfg /change monitor-timeout-dc 5
 powercfg /hibernate on
 
 # ------------------------------------------------------------
-# 10. Restaurer Copilot
-# ------------------------------------------------------------
-
-# Côté machine
-Remove-ItemProperty `
-  -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" `
-  -Name "TurnOffWindowsCopilot" `
-  -ErrorAction SilentlyContinue
-
-# ------------------------------------------------------------
-# 11. Restaurer Edge
+# 10. Restaurer Edge
 # ------------------------------------------------------------
 
 $EdgePolicyRoot = "HKLM:\SOFTWARE\Policies\Microsoft\Edge"
 Remove-Item -Path "$EdgePolicyRoot\URLBlocklist" -Recurse -Force -ErrorAction SilentlyContinue
 
 # ------------------------------------------------------------
-# 12. Relancer Explorer immédiatement
+# 11. Relancer Explorer immédiatement
 # ------------------------------------------------------------
 
 Get-Process explorer -ErrorAction SilentlyContinue | Stop-Process -Force
