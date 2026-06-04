@@ -102,7 +102,7 @@ if ($null -ne $KioskProfile) {
 
         reg unload "HKU\$HiveName" 2>$null | Out-Null
         reg load "HKU\$HiveName" "$NtUserDat" | Out-Null
-
+        
         try {
             $ExplorerPolicy = "Registry::HKEY_USERS\$HiveName\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
             $SystemPolicy   = "Registry::HKEY_USERS\$HiveName\Software\Microsoft\Windows\CurrentVersion\Policies\System"
@@ -118,13 +118,13 @@ if ($null -ne $KioskProfile) {
                 "DisallowRun",
                 "NoDrives",
                 "NoViewOnDrive",
-                "NoFolderOptions"
+                "NoFolderOptions"            
             )
 
             foreach ($Name in $ExplorerPolicyNames) {
                 Remove-ItemProperty -Path $ExplorerPolicy -Name $Name -ErrorAction SilentlyContinue
             }
-
+            
             $SystemPolicyNames = @(
                 "DisableTaskMgr",
                 "DisableLockWorkstation",
@@ -141,6 +141,12 @@ if ($null -ne $KioskProfile) {
             
             # Réafficher les icônes du bureau
             Remove-ItemProperty -Path $ExplorerAdvanced -Name "HideIcons" -ErrorAction SilentlyContinue
+
+            # Réafficher le bouton Copilot si Windows le gère
+            reg delete "HKU\$HiveName\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v ShowCopilotButton /f 2>$null | Out-Null
+
+            # Supprimer la désactivation Copilot côté profil kiosk
+            reg delete "HKU\$HiveName\Software\Policies\Microsoft\Windows\WindowsCopilot" /v TurnOffWindowsCopilot /f 2>$null | Out-Null
 
         }
         finally {
@@ -177,7 +183,17 @@ powercfg /change monitor-timeout-dc 5
 powercfg /hibernate on
 
 # ------------------------------------------------------------
-# 10. Relancer Explorer immédiatement
+# 10. Restaurer Copilot
+# ------------------------------------------------------------
+
+# Côté machine
+Remove-ItemProperty `
+  -Path "HKLM:\SOFTWARE\Policies\Microsoft\Windows\WindowsCopilot" `
+  -Name "TurnOffWindowsCopilot" `
+  -ErrorAction SilentlyContinue
+
+# ------------------------------------------------------------
+# 11. Relancer Explorer immédiatement
 # ------------------------------------------------------------
 
 Get-Process explorer -ErrorAction SilentlyContinue | Stop-Process -Force
