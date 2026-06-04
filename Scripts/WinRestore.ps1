@@ -114,7 +114,7 @@ if ($null -ne $KioskProfile) {
                 "NoViewContextMenu",
                 "NoTrayContextMenu",
                 "NoDesktop",
-                "NoControlPanel"
+                "NoControlPanel",
                 "DisallowRun"
             )
 
@@ -132,12 +132,13 @@ if ($null -ne $KioskProfile) {
             foreach ($Name in $SystemPolicyNames) {
                 Remove-ItemProperty -Path $SystemPolicy -Name $Name -ErrorAction SilentlyContinue
             }
-            # Supprimer la whitelist applicative
-            Remove-ItemProperty -Path $ExplorerPolicy -Name "DisallowRun" -ErrorAction SilentlyContinue
-            Remove-Item -Path "$ExplorerPolicy\DisallowRun" -Recurse -Force -ErrorAction SilentlyContinue
-
+            # Supprimer la liste applicative interdite, dont msedge.exe
+            $DisallowRun = "$ExplorerPolicy\DisallowRun"
+            Remove-Item -Path $DisallowRun -Recurse -Force -ErrorAction SilentlyContinue
+            
             # Réafficher les icônes du bureau
             Remove-ItemProperty -Path $ExplorerAdvanced -Name "HideIcons" -ErrorAction SilentlyContinue
+
         }
         finally {
             reg unload "HKU\$HiveName" 2>$null | Out-Null
