@@ -51,7 +51,25 @@ foreach ($Package in $CopilotPackages) {
 }
 
 # ------------------------------------------------------------
-# 3. Détection automatique du vrai profil kiosk
+# 3. Empêcher la réinstallation automatique de Copilot
+# ------------------------------------------------------------
+
+Get-AppxProvisionedPackage -Online |
+    Where-Object { $_.DisplayName -like "*Copilot*" } |
+    ForEach-Object {
+
+        Write-Log "Déprovisionnement Copilot : $($_.DisplayName)"
+
+        Remove-AppxProvisionedPackage `
+            -Online `
+            -PackageName $_.PackageName `
+            -ErrorAction SilentlyContinue | Out-Null
+    }
+
+Write-Log "Déprovisionnement Copilot terminé."
+
+# ------------------------------------------------------------
+# 4. Détection automatique du vrai profil kiosk
 # ------------------------------------------------------------
 
 $KioskProfile = Get-CimInstance Win32_UserProfile |
@@ -78,7 +96,7 @@ if (-not (Test-Path $NtUserDat)) {
 Write-Log "Profil kiosk détecté : $KioskProfilePath"
 
 # ------------------------------------------------------------
-# 4. Supprimer les raccourcis Copilot visibles
+# 5. Supprimer les raccourcis Copilot visibles
 # ------------------------------------------------------------
 
 $CopilotShortcuts = @(
@@ -94,7 +112,7 @@ foreach ($Shortcut in $CopilotShortcuts) {
 }
 
 # ------------------------------------------------------------
-# 5. Supprimer Copilot des raccourcis épinglés taskbar
+# 6. Supprimer Copilot des raccourcis épinglés taskbar
 # ------------------------------------------------------------
 
 $PinnedTaskbarPath = Join-Path $KioskProfilePath "AppData\Roaming\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar"
@@ -110,7 +128,7 @@ else {
 }
 
 # ------------------------------------------------------------
-# 6. Charger la ruche utilisateur kiosk
+# 7. Charger la ruche utilisateur kiosk
 # ------------------------------------------------------------
 
 reg unload "HKU\$HiveName" 2>$null | Out-Null
@@ -118,7 +136,7 @@ reg load "HKU\$HiveName" "$NtUserDat" | Out-Null
 
 try {
     # --------------------------------------------------------
-    # 7. Masquer le bouton Copilot dans la taskbar kiosk
+    # 8. Masquer le bouton Copilot dans la taskbar kiosk
     # --------------------------------------------------------
     # ShowCopilotButton = 0 masque le bouton Copilot dans la barre des tâches.
 
@@ -127,7 +145,7 @@ try {
     Write-Log "Bouton Copilot masqué pour kiosk."
 
     # --------------------------------------------------------
-    # 8. Désactiver Copilot côté utilisateur kiosk
+    # 9. Désactiver Copilot côté utilisateur kiosk
     # --------------------------------------------------------
 
     reg add "HKU\$HiveName\Software\Policies\Microsoft\Windows\WindowsCopilot" /v TurnOffWindowsCopilot /t REG_DWORD /d 1 /f | Out-Null
