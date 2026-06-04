@@ -39,20 +39,21 @@ else {
 }
 
 try {
-    $ExplorerPolicy = "$HiveRoot\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
-    $DisallowRunPath = "$ExplorerPolicy\DisallowRun"
+    $ExplorerPolicyReg = "HKU\$KioskSid\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
 
-    New-Item -Path $ExplorerPolicy -Force | Out-Null
-    New-Item -Path $DisallowRunPath -Force | Out-Null
+    if ($HiveWasLoadedByScript) {
+        $ExplorerPolicyReg = "HKU\$HiveName\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+    }
 
-    # Active la politique DisallowRun
-    Set-ItemProperty `
-        -Path $ExplorerPolicy `
-        -Name "DisallowRun" `
-        -Type DWord `
-        -Value 1
+    $DisallowRunReg = "$ExplorerPolicyReg\DisallowRun"
 
-    # Liste des exécutables à bloquer pour kiosk
+    # Créer les clés avec reg.exe
+    reg add "$ExplorerPolicyReg" /f | Out-Null
+    reg add "$DisallowRunReg" /f | Out-Null
+
+    # Activer DisallowRun
+    reg add "$ExplorerPolicyReg" /v DisallowRun /t REG_DWORD /d 1 /f | Out-Null
+
     $ForbiddenApps = @(
         "cmd.exe",
         "powershell.exe",
@@ -73,25 +74,20 @@ try {
         "msedgewebview2.exe"
     )
 
-    # Nettoyage ancienne liste
-    Remove-Item -Path $DisallowRunPath -Recurse -Force -ErrorAction SilentlyContinue
-    New-Item -Path $DisallowRunPath -Force | Out-Null
+    # Nettoyer ancienne liste
+    reg delete "$DisallowRunReg" /f 2>$null | Out-Null
+    reg add "$DisallowRunReg" /f | Out-Null
 
     $i = 1
     foreach ($App in $ForbiddenApps) {
-        New-ItemProperty `
-            -Path $DisallowRunPath `
-            -Name "$i" `
-            -Value $App `
-            -PropertyType String `
-            -Force | Out-Null
-
+        reg add "$DisallowRunReg" /v "$i" /t REG_SZ /d "$App" /f | Out-Null
         Write-Log "Application bloquée pour kiosk : $App"
         $i++
     }
 
     Write-Log "Blocage applications interdites appliqué."
 }
+
 finally {
     if ($HiveWasLoadedByScript) {
         reg unload "HKU\$HiveName" 2>$null | Out-Null
