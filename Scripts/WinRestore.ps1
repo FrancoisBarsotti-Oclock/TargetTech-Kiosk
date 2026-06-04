@@ -115,7 +115,10 @@ if ($null -ne $KioskProfile) {
                 "NoTrayContextMenu",
                 "NoDesktop",
                 "NoControlPanel",
-                "DisallowRun"
+                "DisallowRun",
+                "NoDrives",
+                "NoViewOnDrive",
+                "NoFolderOptions"
             )
 
             foreach ($Name in $ExplorerPolicyNames) {
