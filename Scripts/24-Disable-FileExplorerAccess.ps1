@@ -83,33 +83,11 @@ reg load "HKU\$HiveName" "$NtUserDat" | Out-Null
 
 try {
     $ExplorerPolicy = "Registry::HKEY_USERS\$HiveName\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
-    $DisallowRun = "$ExplorerPolicy\DisallowRun"
-
+    
     New-Item -Path $ExplorerPolicy -Force | Out-Null
-    New-Item -Path $DisallowRun -Force | Out-Null
-
+        
     # --------------------------------------------------------
-    # 4. Bloquer le lancement direct de explorer.exe
-    # --------------------------------------------------------
-    # Attention :
-    # explorer.exe reste déjà chargé comme shell Windows.
-    # Cette stratégie empêche surtout l'utilisateur de lancer
-    # une nouvelle fenêtre Explorateur depuis l'interface.
-    # Elle ne doit pas tuer Explorer.exe.
-
-    Set-ItemProperty -Path $ExplorerPolicy -Name "DisallowRun" -Type DWord -Value 1
-
-    New-ItemProperty `
-        -Path $DisallowRun `
-        -Name "1" `
-        -Value "explorer.exe" `
-        -PropertyType String `
-        -Force | Out-Null
-
-    Write-Log "Lancement direct de explorer.exe bloqué pour kiosk."
-
-    # --------------------------------------------------------
-    # 5. Masquer des entrées Explorer courantes
+    # 4. Masquer des entrées Explorer courantes
     # --------------------------------------------------------
 
     # Masque les lecteurs dans "Ce PC"

@@ -52,14 +52,14 @@ try {
         "compmgmt.msc",
         "services.msc",
         "gpedit.msc",
-        "secpol.msc"
+        "secpol.msc",
+        "msedge.exe"
     )
 
     # Nettoyage ancienne liste
-    Get-ItemProperty -Path $DisallowRunPath -ErrorAction SilentlyContinue |
-        Select-Object -Property * |
-        Out-Null
-
+    Remove-Item -Path $DisallowRunPath -Recurse -Force -ErrorAction SilentlyContinue
+    New-Item -Path $DisallowRunPath -Force | Out-Null
+    
     $i = 1
     foreach ($App in $ForbiddenApps) {
         New-ItemProperty `

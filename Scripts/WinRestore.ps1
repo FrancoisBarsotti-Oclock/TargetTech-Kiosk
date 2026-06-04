@@ -180,6 +180,8 @@ powercfg /hibernate on
 # 10. Relancer Explorer immédiatement
 # ------------------------------------------------------------
 
+Get-Process explorer -ErrorAction SilentlyContinue | Stop-Process -Force
+Start-Sleep -Seconds 1
 Start-Process explorer.exe
 
 Write-Host "Restauration terminée."

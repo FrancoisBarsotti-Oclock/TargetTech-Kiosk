@@ -18,9 +18,6 @@ $KioskUser = "kiosk"
 $EdgePublicDesktop = "C:\Users\Public\Desktop\Microsoft Edge.lnk"
 $EdgeUserDesktop = "C:\Users\$KioskUser\Desktop\Microsoft Edge.lnk"
 
-# Chemin de Microsoft Edge
-$EdgePath = "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
-
 # ------------------------------------------------------------
 # 1. Supprimer les raccourcis Edge visibles
 # ------------------------------------------------------------
@@ -67,45 +64,5 @@ else {
     Write-Log "Profil kiosk introuvable pour suppression Edge taskbar." "WARN"
 }
 
-# ------------------------------------------------------------
-# 3. Bloquer le lancement direct de Microsoft Edge pour kiosk
-# ------------------------------------------------------------
-# Utilise une stratégie Explorer DisallowRun dans le profil kiosk.
-# Cela empêche l'utilisateur de lancer msedge.exe depuis Explorer.
-
-if ($null -ne $KioskProfile) {
-
-    $HiveName = "KioskTempHive"
-    $NtUserDat = Join-Path $KioskProfile.LocalPath "NTUSER.DAT"
-
-    if (Test-Path $NtUserDat) {
-
-        reg unload "HKU\$HiveName" 2>$null | Out-Null
-        reg load "HKU\$HiveName" "$NtUserDat" | Out-Null
-
-        try {
-            $ExplorerPolicy = "Registry::HKEY_USERS\$HiveName\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
-            $DisallowRun = "$ExplorerPolicy\DisallowRun"
-
-            New-Item -Path $ExplorerPolicy -Force | Out-Null
-            New-Item -Path $DisallowRun -Force | Out-Null
-
-            Set-ItemProperty -Path $ExplorerPolicy -Name "DisallowRun" -Type DWord -Value 1
-
-            New-ItemProperty `
-                -Path $DisallowRun `
-                -Name "1" `
-                -Value "msedge.exe" `
-                -PropertyType String `
-                -Force | Out-Null
-
-            Write-Log "Lancement de msedge.exe bloqué pour kiosk."
-        }
-        finally {
-            reg unload "HKU\$HiveName" 2>$null | Out-Null
-            Write-Log "Ruche kiosk déchargée."
-        }
-    }
-}
 
 Write-Log "Désactivation/masquage Microsoft Edge terminée."
