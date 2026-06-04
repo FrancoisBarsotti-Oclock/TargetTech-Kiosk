@@ -30,7 +30,17 @@ powercfg /hibernate off
 Write-Log "Veille, extinction écran et hibernation désactivées."
 
 # ------------------------------------------------------------
-# 2. Désactiver notifications toast Windows
+# 2. Désactiver la localisation Windows
+# ------------------------------------------------------------
+
+reg add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\location" /v Value /t REG_SZ /d Deny /f | Out-Null
+
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\LocationAndSensors" /v DisableLocation /t REG_DWORD /d 1 /f | Out-Null
+
+Write-Log "Localisation Windows désactivée."
+
+# ------------------------------------------------------------
+# 3. Désactiver notifications toast Windows
 # ------------------------------------------------------------
 
 $KioskProfile = Get-CimInstance Win32_UserProfile |
