@@ -64,13 +64,15 @@ try {
         "msconfig.exe",
         "control.exe",
         "taskmgr.exe",
+        "explorer.exe",
         "compmgmt.msc",
         "services.msc",
         "gpedit.msc",
         "secpol.msc",
         "msedge.exe",
         "copilot.exe",
-        "microsoft.copilot.exe",
+        "WindowsCopilot.exe",
+        "microsoft.copilot.exe",        
         "msedgewebview2.exe"
     )
 
