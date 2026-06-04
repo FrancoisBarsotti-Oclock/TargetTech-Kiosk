@@ -20,12 +20,26 @@ if ($null -eq $KioskProfile) {
 
 $HiveName = "KioskTempHive"
 $NtUserDat = Join-Path $KioskProfile.LocalPath "NTUSER.DAT"
+$KioskSid = $KioskProfile.SID
 
-reg unload "HKU\$HiveName" 2>$null | Out-Null
-reg load "HKU\$HiveName" "$NtUserDat" | Out-Null
+# Si le profil kiosk est déjà chargé, utiliser directement son SID
+if (Test-Path "Registry::HKEY_USERS\$KioskSid") {
+    $HiveRoot = "Registry::HKEY_USERS\$KioskSid"
+    $HiveWasLoadedByScript = $false
+    Write-Log "Ruche kiosk déjà chargée via SID : $KioskSid"
+}
+else {
+    # Sinon, charger NTUSER.DAT temporairement
+    reg unload "HKU\$HiveName" 2>$null | Out-Null
+    reg load "HKU\$HiveName" "$NtUserDat" | Out-Null
+
+    $HiveRoot = "Registry::HKEY_USERS\$HiveName"
+    $HiveWasLoadedByScript = $true
+    Write-Log "Ruche kiosk chargée temporairement : $HiveName"
+}
 
 try {
-    $ExplorerPolicy = "Registry::HKEY_USERS\$HiveName\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
+    $ExplorerPolicy = "$HiveRoot\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer"
     $DisallowRunPath = "$ExplorerPolicy\DisallowRun"
 
     New-Item -Path $ExplorerPolicy -Force | Out-Null
@@ -79,8 +93,13 @@ try {
     Write-Log "Blocage applications interdites appliqué."
 }
 finally {
-    reg unload "HKU\$HiveName" 2>$null | Out-Null
-    Write-Log "Ruche kiosk déchargée."
+    if ($HiveWasLoadedByScript) {
+        reg unload "HKU\$HiveName" 2>$null | Out-Null
+        Write-Log "Ruche kiosk déchargée."
+    }
+    else {
+        Write-Log "Ruche kiosk déjà chargée, pas de déchargement."
+    }
 }
 
 Write-Log "Blocage applications interdites terminé."
