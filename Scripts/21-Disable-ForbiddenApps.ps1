@@ -53,13 +53,16 @@ try {
         "services.msc",
         "gpedit.msc",
         "secpol.msc",
-        "msedge.exe"
+        "msedge.exe",
+        "copilot.exe",
+        "microsoft.copilot.exe",
+        "msedgewebview2.exe"
     )
 
     # Nettoyage ancienne liste
     Remove-Item -Path $DisallowRunPath -Recurse -Force -ErrorAction SilentlyContinue
     New-Item -Path $DisallowRunPath -Force | Out-Null
-    
+
     $i = 1
     foreach ($App in $ForbiddenApps) {
         New-ItemProperty `
