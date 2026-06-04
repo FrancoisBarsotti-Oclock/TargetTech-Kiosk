@@ -66,3 +66,23 @@ else {
 
 
 Write-Log "Désactivation/masquage Microsoft Edge terminée."
+
+# ------------------------------------------------------------
+# 3. Bloquer la navigation Edge au niveau machine
+# ------------------------------------------------------------
+
+$EdgePolicyRoot = "HKLM:\SOFTWARE\Policies\Microsoft\Edge"
+
+New-Item -Path $EdgePolicyRoot -Force | Out-Null
+
+Remove-Item -Path "$EdgePolicyRoot\URLBlocklist" -Recurse -Force -ErrorAction SilentlyContinue
+New-Item -Path "$EdgePolicyRoot\URLBlocklist" -Force | Out-Null
+
+New-ItemProperty `
+    -Path "$EdgePolicyRoot\URLBlocklist" `
+    -Name "1" `
+    -Value "*" `
+    -PropertyType String `
+    -Force | Out-Null
+
+Write-Log "Navigation Microsoft Edge bloquée par policy."
