@@ -193,7 +193,14 @@ Remove-ItemProperty `
   -ErrorAction SilentlyContinue
 
 # ------------------------------------------------------------
-# 11. Relancer Explorer immédiatement
+# 11. Restaurer Edge
+# ------------------------------------------------------------
+
+$EdgePolicyRoot = "HKLM:\SOFTWARE\Policies\Microsoft\Edge"
+Remove-Item -Path "$EdgePolicyRoot\URLBlocklist" -Recurse -Force -ErrorAction SilentlyContinue
+
+# ------------------------------------------------------------
+# 12. Relancer Explorer immédiatement
 # ------------------------------------------------------------
 
 Get-Process explorer -ErrorAction SilentlyContinue | Stop-Process -Force
