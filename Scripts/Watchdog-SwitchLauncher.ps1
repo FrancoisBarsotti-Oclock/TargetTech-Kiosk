@@ -1,34 +1,30 @@
 # ============================================================
 # Watchdog-SwitchLauncher.ps1
-# Surveille SwitchLauncher.exe et le relance si nécessaire
+# Surveille SwitchLauncher et relance la tâche élevée si besoin
 # ============================================================
 
-$LauncherPath = "C:\TargetTech\Apps\SwitchLauncher.exe"
 $LogPath = "C:\TargetTech\Logs\watchdog.log"
+$LauncherTaskName = "TargetTech-KioskLauncher"
 
 function Write-WatchdogLog {
     param([string]$Message)
 
-    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-    Add-Content -Path $LogPath -Value "[$timestamp] $Message"
+    $Date = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    Add-Content -Path $LogPath -Value "[$Date] $Message"
 }
 
 Write-WatchdogLog "Watchdog démarré."
 
 while ($true) {
-    # Vérifie si SwitchLauncher tourne déjà
-    $process = Get-Process -Name "SwitchLauncher" -ErrorAction SilentlyContinue
 
-    if ($null -eq $process) {
-        Write-WatchdogLog "SwitchLauncher absent. Relance en cours."
+    $Launcher = Get-Process -Name "SwitchLauncher" -ErrorAction SilentlyContinue
 
-        try {
-            schtasks /Run /TN "TargetTech-SwitchLauncher-Elevated" | Out-Null
-            Write-WatchdogLog "Tâche SwitchLauncher-Elevated exécutée."
-        }
-        catch {
-            Write-WatchdogLog "Erreur relance SwitchLauncher : $($_.Exception.Message)"
-        }
+    if ($null -eq $Launcher) {
+        Write-WatchdogLog "SwitchLauncher absent. Relance via tâche $LauncherTaskName."
+
+        schtasks /Run /TN $LauncherTaskName | Out-Null
+
+        Start-Sleep -Seconds 5
     }
 
     Start-Sleep -Seconds 3
