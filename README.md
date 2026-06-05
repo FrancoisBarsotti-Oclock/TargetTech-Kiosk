@@ -153,6 +153,8 @@ Le schéma ci-dessous résume le fonctionnement global de TargetTech WinKiosk, d
 └──────────────────────────────────────────────┘
 ```
 
+### Pour bien plus de détails, rendez-vous sur 👉​ [Architecture - TargetTech WinKiosk](https://github.com/FrancoisBarsotti-Oclock/TargetTech-Kiosk/blob/master/ARCHITECTURE.md) 👈​
+
 ---
 
 # 📂 Arborescence du projet
@@ -534,5 +536,9 @@ C:\TargetTech\Scripts\WinKiosk.ps1
 Projet développé dans le cadre de la sécurisation d'un environnement Windows 11 dédié à l'activité de TargetTech.
 
 Objectif : fournir une borne web sécurisée, administrable et facilement restaurable.
+
+---
+
+#### 💡​ Pour avoir plus d'information détaillée sur les scripts (et autres), rendez-vous sur 👉​ [Architecture - TargetTech WinKiosk](https://github.com/FrancoisBarsotti-Oclock/TargetTech-Kiosk/blob/master/ARCHITECTURE.md) 👈​
 
 ---

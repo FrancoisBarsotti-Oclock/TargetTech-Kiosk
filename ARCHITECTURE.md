@@ -1,4 +1,4 @@
-# 🏗️ ARCHITECTURE.md — TargetTech WinKiosk
+# 🏗️ ARCHITECTURE — TargetTech WinKiosk
 
 Ce document décrit le rôle des scripts du projet **TargetTech WinKiosk**, leurs dépendances principales, les modifications système appliquées et leur équivalent de restauration dans `WinRestore.ps1`.
 
@@ -243,3 +243,7 @@ Après `WinRestore.ps1` :
 * Les deux scripts maîtres doivent être lancés depuis une session administrateur.
 
 ---
+
+#### 💡​ Pour avoir une vision plus général du projet, rendez-vous sur 👉 [README.md de TargetTech-Kiosk](https://github.com/FrancoisBarsotti-Oclock/TargetTech-Kiosk/blob/master/README.md) 👈​
+
+----
