@@ -49,6 +49,9 @@ $AllowUrls = @(
     "upload.wikimedia.org",
     "paypal.com",
     "youtube.com",
+    "youtube-nocookie.com",
+    "ytimg.com",
+    "googlevideo.com",
     "chrome://policy",
     "chrome://gpu",
     "chrome://webrtc-internals"
