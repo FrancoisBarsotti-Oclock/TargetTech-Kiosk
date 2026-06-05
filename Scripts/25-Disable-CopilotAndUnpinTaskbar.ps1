@@ -54,19 +54,23 @@ foreach ($Package in $CopilotPackages) {
 # 3. Empêcher la réinstallation automatique de Copilot
 # ------------------------------------------------------------
 
-Get-AppxProvisionedPackage -Online |
-    Where-Object { $_.DisplayName -like "*Copilot*" } |
-    ForEach-Object {
+try {
+    Get-AppxProvisionedPackage -Online -ErrorAction Stop |
+        Where-Object { $_.DisplayName -like "*Copilot*" } |
+        ForEach-Object {
+            Write-Log "Déprovisionnement Copilot : $($_.DisplayName)"
 
-        Write-Log "Déprovisionnement Copilot : $($_.DisplayName)"
+            Remove-AppxProvisionedPackage `
+                -Online `
+                -PackageName $_.PackageName `
+                -ErrorAction SilentlyContinue | Out-Null
+        }
 
-        Remove-AppxProvisionedPackage `
-            -Online `
-            -PackageName $_.PackageName `
-            -ErrorAction SilentlyContinue | Out-Null
-    }
-
-Write-Log "Déprovisionnement Copilot terminé."
+    Write-Log "Déprovisionnement Copilot terminé."
+}
+catch {
+    Write-Log "Déprovisionnement Copilot ignoré : $($_.Exception.Message)" "WARN"
+}
 
 # ------------------------------------------------------------
 # 4. Détection automatique du vrai profil kiosk

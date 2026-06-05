@@ -1,6 +1,7 @@
 # ============================================================
 # 08-Configure-WatchdogTask.ps1
 # Création de la tâche planifiée du watchdog
+# Lance le watchdog via VBS pour éviter toute fenêtre PowerShell visible
 # ============================================================
 
 . "C:\TargetTech\Scripts\Common.ps1"
@@ -8,26 +9,22 @@
 Write-Log "Début configuration tâche planifiée Watchdog."
 
 $TaskName = "TargetTech-Watchdog"
-$WatchdogScript = "C:\TargetTech\Scripts\Watchdog-SwitchLauncher.ps1"
-$PowerShellPath = "C:\Program Files\PowerShell\7\pwsh.exe"
+$WatchdogVbs = "C:\TargetTech\Scripts\Run-Watchdog.vbs"
 
-if (-not (Test-Path $WatchdogScript)) {
-    Write-Log "Script watchdog introuvable : $WatchdogScript" "ERROR"
-    throw "Script watchdog absent."
-}
-
-if (-not (Test-Path $PowerShellPath)) {
-    Write-Log "PowerShell 7 introuvable : $PowerShellPath" "ERROR"
-    throw "PowerShell 7 absent."
+# Vérifie que le lanceur VBS existe
+if (-not (Test-Path $WatchdogVbs)) {
+    Write-Log "VBS watchdog introuvable : $WatchdogVbs" "ERROR"
+    throw "VBS watchdog absent."
 }
 
 # Supprime l'ancienne tâche si elle existe
-schtasks /Delete /TN $TaskName /F 2>$null
+schtasks /Delete /TN $TaskName /F 2>$null | Out-Null
 
 # Crée une tâche élevée au logon kiosk
+# wscript.exe lance le watchdog sans fenêtre visible
 schtasks /Create `
     /TN $TaskName `
-    /TR "`"$PowerShellPath`" -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$WatchdogScript`"" `
+    /TR "`"wscript.exe`" `"$WatchdogVbs`"" `
     /SC ONLOGON `
     /RU kiosk `
     /RL HIGHEST `
