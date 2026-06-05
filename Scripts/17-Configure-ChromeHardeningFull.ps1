@@ -59,6 +59,7 @@ $AllowUrls = @(
     "matomo.science-edu.fr",
     "upload.wikimedia.org",
     "paypal.com",
+    "youtube.com",
     "chrome://policy",
     "chrome://gpu",
     "chrome://webrtc-internals"
