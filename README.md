@@ -47,7 +47,7 @@ L'ensemble des modifications est entièrement scripté et journalisé.
 Le schéma ci-dessous résume le fonctionnement global de TargetTech WinKiosk, depuis le déploiement administrateur jusqu’à la restauration maintenance.
 
 🏗️ ARCHITECTURE TARGETTECH WINKIOSK
-
+```
 ┌──────────────────────────────────────────────┐
 │              👤 Administrateur               │
 │        Session Windows avec droits admin     │
@@ -151,6 +151,7 @@ Le schéma ci-dessous résume le fonctionnement global de TargetTech WinKiosk, d
 │ - raccourcis Windows restaurés                │
 │ - accès admin normal                          │
 └──────────────────────────────────────────────┘
+```
 
 ---
 
