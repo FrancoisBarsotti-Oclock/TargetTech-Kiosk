@@ -174,7 +174,7 @@ powercfg /change standby-timeout-dc 15
 powercfg /change monitor-timeout-ac 10
 powercfg /change monitor-timeout-dc 5
 
-powercfg /hibernate on
+powercfg /hibernate on 2>$null
 
 # ------------------------------------------------------------
 # 10. Restaurer Edge
