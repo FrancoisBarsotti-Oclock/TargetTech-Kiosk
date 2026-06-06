@@ -435,26 +435,285 @@ Si l'autologon fonctionne après redémarrage, la modification du mot de passe a
 
 # 🧪 Validation recommandée
 
-Après `WinKiosk.ps1` :
+Après toute modification importante du projet, il est recommandé de valider le cycle complet :
 
-* autologon kiosk
-* SwitchLauncher automatique
-* Chrome whitelist OK
-* Edge bloqué
-* Copilot absent
-* Explorer inaccessible
-* outils système bloqués
-* watchdog fonctionnel
+```text
+WinKiosk
+   ↓
+Redémarrage
+   ↓
+Validation kiosk
+   ↓
+WinRestore
+   ↓
+Redémarrage
+   ↓
+Validation Windows
+```
 
-Après `WinRestore.ps1` :
+---
 
-* Windows administrable
-* autologon supprimé
-* Chrome libre
-* Explorer libre
-* Edge libre
-* touches Windows fonctionnelles
-* tâches TargetTech supprimées
+# 🔒 Checklist de validation après WinKiosk.ps1
+
+Exécuter :
+
+```powershell
+C:\TargetTech\Scripts\WinKiosk.ps1
+```
+
+Puis redémarrer la machine avec un `Restart-Computer`.
+
+## ✅ Validation du démarrage
+
+* [ ] Ouverture automatique de la session `kiosk`
+* [ ] Aucun écran de bienvenue Microsoft
+* [ ] Aucun message de configuration Windows
+* [ ] Aucun message relatif à la localisation
+* [ ] SwitchLauncher démarre automatiquement
+* [ ] Le watchdog est actif
+
+---
+
+## ✅ Validation de Chrome
+
+* [ ] Chrome s'ouvre depuis SwitchLauncher
+* [ ] `target-tech.fr` est accessible
+* [ ] `paypal.com` est accessible
+* [ ] `youtube.com` est accessible (si présent dans la whitelist)
+* [ ] Les vidéos TargetTech fonctionnent
+* [ ] Un site non autorisé est bloqué
+
+Exemple :
+
+* [ ] https://www.lemonde.fr
+* [ ] https://www.wikipedia.org
+* [ ] https://www.google.com
+
+---
+
+## ✅ Validation des restrictions Chrome
+
+* [ ] Téléchargements bloqués
+* [ ] Impression bloquée
+* [ ] DevTools (F12) bloqués
+* [ ] Code source (Ctrl+U) bloqué
+* [ ] Mode Invité désactivé
+* [ ] Ajout de profil désactivé
+* [ ] Synchronisation Google désactivée
+
+---
+
+## ✅ Validation de l'environnement kiosk
+
+* [ ] Bureau conforme
+* [ ] Fond d'écran TargetTech appliqué
+* [ ] Barre des tâches masquée automatiquement
+* [ ] Icônes attendues visibles
+* [ ] Aucune icône parasite
+
+---
+
+## ✅ Validation des raccourcis clavier
+
+* [ ] Win bloqué
+* [ ] Win + E bloqué
+* [ ] Win + R bloqué
+* [ ] Win + D bloqué
+* [ ] Win + Tab bloqué
+* [ ] Ctrl + Alt + Del accessible
+
+---
+
+## ✅ Validation des outils interdits
+
+* [ ] cmd.exe bloqué
+* [ ] powershell.exe bloqué
+* [ ] pwsh.exe bloqué
+* [ ] regedit.exe bloqué
+* [ ] reg.exe bloqué
+* [ ] mmc.exe bloqué
+* [ ] taskmgr.exe bloqué
+* [ ] msconfig.exe bloqué
+* [ ] control.exe bloqué
+* [ ] services.msc bloqué
+* [ ] compmgmt.msc bloqué
+* [ ] gpedit.msc bloqué
+* [ ] secpol.msc bloqué
+
+---
+
+## ✅ Validation Edge
+
+* [ ] Icône Edge absente de la taskbar
+* [ ] Navigation Edge bloquée
+* [ ] Edge ne permet pas l'accès Internet
+
+---
+
+## ✅ Validation Copilot
+
+* [ ] Icône Copilot absente
+* [ ] Bouton Copilot absent de la taskbar
+* [ ] Copilot ne peut pas être lancé
+
+---
+
+## ✅ Validation Explorateur
+
+* [ ] Explorateur absent de la taskbar
+* [ ] Explorateur inaccessible via menu Windows
+* [ ] Lecteurs non visibles pour kiosk
+
+---
+
+## ✅ Validation Watchdog
+
+Ouvrir PowerShell administrateur :
+
+```powershell
+Stop-Process -Name SwitchLauncher -Force
+```
+
+Vérifier :
+
+* [ ] SwitchLauncher est relancé automatiquement
+* [ ] Aucun message d'erreur
+* [ ] watchdog.log est mis à jour
+
+---
+
+## ✅ Validation journaux
+
+Vérifier :
+
+```text
+Logs
+├── deployment.log
+├── deployment.log.local
+├── kiosk-shell.log
+└── watchdog.log
+```
+
+* [ ] Aucun message d'erreur critique
+* [ ] Journalisation fonctionnelle
+
+---
+
+# 🔧 Checklist de validation après WinRestore.ps1
+
+Exécuter :
+
+```powershell
+C:\TargetTech\Scripts\WinRestore.ps1
+```
+
+Puis redémarrer la machine (`Restart-Computer`).
+
+---
+
+## ✅ Validation du retour Windows
+
+* [ ] Session administrateur accessible
+* [ ] Autologon kiosk désactivé
+* [ ] Écran de connexion Windows normal
+
+---
+
+## ✅ Validation Explorer
+
+* [ ] Explorer.exe lancé normalement
+* [ ] Explorateur de fichiers accessible
+* [ ] Lecteurs visibles
+* [ ] Navigation normale
+
+---
+
+## ✅ Validation Chrome
+
+* [ ] Chrome démarre normalement
+* [ ] Tous les sites sont accessibles
+* [ ] Téléchargements autorisés
+* [ ] Impression autorisée
+* [ ] DevTools accessibles
+
+---
+
+## ✅ Validation Edge
+
+* [ ] Edge fonctionne normalement
+* [ ] Navigation Internet possible
+
+---
+
+## ✅ Validation outils système
+
+* [ ] cmd.exe accessible
+* [ ] powershell.exe accessible
+* [ ] pwsh.exe accessible
+* [ ] regedit.exe accessible
+* [ ] mmc.exe accessible
+* [ ] taskmgr.exe accessible
+* [ ] control.exe accessible
+
+---
+
+## ✅ Validation clavier
+
+* [ ] Touche Windows fonctionnelle
+* [ ] Win + E fonctionnel
+* [ ] Win + R fonctionnel
+* [ ] Win + D fonctionnel
+* [ ] Win + Tab fonctionnel
+
+---
+
+## ✅ Validation alimentation
+
+Vérifier :
+
+```powershell
+powercfg /query
+```
+
+* [ ] Veille restaurée
+* [ ] Extinction écran restaurée
+* [ ] Hibernation active (si supportée par le matériel)
+
+---
+
+## ✅ Validation tâches planifiées
+
+Vérifier :
+
+```powershell
+Get-ScheduledTask | Where-Object {$_.TaskName -like "TargetTech*"}
+```
+
+Résultat attendu :
+
+```text
+Aucune tâche TargetTech présente
+```
+
+* [ ] TargetTech-Watchdog supprimée
+* [ ] TargetTech-KioskLauncher supprimée
+* [ ] TargetTech-SwitchLauncher-Elevated supprimée
+* [ ] TargetTech-KioskSession supprimée
+
+---
+
+## ✅ Validation finale
+
+Le poste doit être revenu à un comportement Windows standard :
+
+* [ ] Administration normale possible
+* [ ] Aucun verrouillage kiosk actif
+* [ ] Aucun blocage applicatif actif
+* [ ] Aucun lancement automatique de SwitchLauncher
+* [ ] Aucun lancement automatique de Chrome
+
+Si toutes les cases sont validées, le cycle de déploiement et de restauration est considéré comme conforme.
+
 
 ---
 
