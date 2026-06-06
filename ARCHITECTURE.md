@@ -209,6 +209,230 @@ Il n’est pas appelé automatiquement par `WinKiosk.ps1`.
 
 ---
 
+# 🔑 Gestion du mot de passe du compte kiosk
+
+## Pourquoi le compte kiosk possède un mot de passe ?
+
+Le compte `kiosk` est utilisé pour :
+
+* l'ouverture automatique de session (autologon)
+* l'exécution des tâches planifiées TargetTech
+* le fonctionnement du kiosque après redémarrage
+
+Le mot de passe doit donc être connu du système afin que l'autologon puisse fonctionner correctement.
+
+---
+
+# 📂 Scripts concernés
+
+| Script                       | Rôle                                                |
+| ---------------------------- | --------------------------------------------------- |
+| `03-Create-KioskUser.ps1`    | Création du compte kiosk                            |
+| `04-Configure-Autologon.ps1` | Configuration de l'ouverture automatique de session |
+
+---
+
+# 🔒 Méthode recommandée
+
+Le projet utilise :
+
+```powershell
+$KioskPassword = Read-Host "Entrer le mot de passe temporaire du compte kiosk" -AsSecureString
+```
+
+plutôt que :
+
+```powershell
+$KioskPasswordPlain = "MonMotDePasse123!"
+$KioskPassword = ConvertTo-SecureString $KioskPasswordPlain -AsPlainText -Force
+```
+
+---
+
+## Pourquoi cette méthode est plus sécurisée ?
+
+### ❌ Solution en texte clair
+
+```powershell
+$KioskPasswordPlain = "MonMotDePasse123!"
+```
+
+Le mot de passe :
+
+* apparaît dans le script
+* apparaît dans GitHub
+* apparaît dans les sauvegardes
+* apparaît dans les captures d'écran
+* peut être récupéré par toute personne ayant accès au dépôt
+
+Cette méthode est déconseillée.
+
+---
+
+### ✅ Solution SecureString
+
+```powershell
+$KioskPassword = Read-Host "Entrer le mot de passe temporaire du compte kiosk" -AsSecureString
+```
+
+Le mot de passe :
+
+* n'est jamais affiché à l'écran
+* n'est pas stocké dans le script
+* n'est pas envoyé dans GitHub
+* n'apparaît pas dans les logs
+
+Cette méthode est donc préférable pour un environnement de production.
+
+---
+
+# ⚙️ Fonctionnement de Read-Host -AsSecureString
+
+Lorsque le script rencontre :
+
+```powershell
+$KioskPassword = Read-Host "Entrer le mot de passe temporaire du compte kiosk" -AsSecureString
+```
+
+PowerShell :
+
+1. affiche le message :
+
+```text
+Entrer le mot de passe temporaire du compte kiosk :
+```
+
+2. attend la saisie du clavier
+
+3. masque les caractères saisis
+
+Exemple :
+
+```text
+Entrer le mot de passe temporaire du compte kiosk :
+***************
+```
+
+4. stocke le résultat sous forme de `SecureString`
+
+Cette variable peut ensuite être utilisée directement par :
+
+```powershell
+New-LocalUser
+Set-LocalUser
+```
+
+sans jamais révéler le mot de passe.
+
+---
+
+# 🔄 Changer le mot de passe du compte kiosk
+
+Si un administrateur souhaite modifier le mot de passe du compte kiosk après le déploiement :
+
+## Étape 1 : ouvrir PowerShell administrateur
+
+```powershell
+Run as Administrator
+```
+
+---
+
+## Étape 2 : saisir le nouveau mot de passe
+
+```powershell
+$NewPassword = Read-Host "Nouveau mot de passe kiosk" -AsSecureString
+```
+
+Exemple :
+
+```text
+PS C:\Users\Admin>
+
+$NewPassword = Read-Host "Nouveau mot de passe kiosk" -AsSecureString
+
+Nouveau mot de passe kiosk:
+***************
+```
+
+---
+
+## Étape 3 : appliquer le nouveau mot de passe
+
+```powershell
+Set-LocalUser -Name "kiosk" -Password $NewPassword
+```
+
+Cette commande met à jour le mot de passe du compte Windows `kiosk`. Cette commande est obligatoire pour changer réellement le mot de passe du compte Windows: Le simple `Read-Host -AsSecureString` ne fait que stocker le mot de passe dans une variable PowerShell ; il ne modifie rien tant qu'il n'est pas passé à `Set-LocalUser` (ou `New-LocalUser` lors de la création du compte).
+
+---
+
+# ⚠️ Étape supplémentaire obligatoire
+
+Après modification du mot de passe Windows du compte kiosk, il faut également mettre à jour l'autologon.
+
+En effet :
+
+* le compte Windows utilise désormais le nouveau mot de passe
+* mais Windows possède encore l'ancien mot de passe enregistré pour l'autologon
+
+Si cette étape est oubliée :
+
+```text
+Compte kiosk = nouveau mot de passe
+Autologon = ancien mot de passe
+```
+
+Le démarrage automatique du kiosque échouera.
+
+---
+
+# Mise à jour de l'autologon
+
+Deux solutions sont possibles :
+
+### Solution recommandée
+
+Relancer :
+
+```powershell
+04-Configure-Autologon.ps1
+```
+
+en saisissant le nouveau mot de passe.
+
+---
+
+### Solution alternative
+
+Modifier directement les valeurs :
+
+```text
+HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+```
+
+notamment :
+
+```text
+DefaultPassword
+```
+
+Cette méthode est réservée aux administrateurs avancés.
+
+---
+
+# Vérification
+
+Après modification :
+
+1. redémarrer la machine
+2. vérifier l'ouverture automatique du compte kiosk
+3. vérifier le lancement automatique de SwitchLauncher
+4. vérifier le fonctionnement normal du kiosque
+
+Si l'autologon fonctionne après redémarrage, la modification du mot de passe a été correctement appliquée.
+
+
 # 🧪 Validation recommandée
 
 Après `WinKiosk.ps1` :
